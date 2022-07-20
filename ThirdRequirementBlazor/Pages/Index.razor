@@ -1,0 +1,190 @@
+﻿@page "/"
+
+@using System.Text.Json
+@using System.Text.Json.Serialization;
+@using ThirdRequirementBlazor.Data
+@inject IHttpClientFactory ClientFactory
+
+<h1>Call web API from a Blazor Server Razor component</h1>
+<div class="row mt-3">
+    <div class="col-6">
+        <EditForm Model="@model" OnValidSubmit="@StartCalculation">
+            <label>
+                First Name:
+                <input @bind="model.FirstName" />
+            </label>
+            <br />
+            <label>
+                Last Name:
+                <input @bind="model.LastName" />
+            </label>
+            <br />
+            <br />
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+
+            <button type="submit">Start Calculation</button>
+            <br />
+            <br />
+        </EditForm>
+    </div>
+</div>
+<hr>
+<div class="row" hidden="@string.IsNullOrWhiteSpace(NewGuid)">
+    <div class="col-6">
+        Process ID: @NewGuid
+    </div>
+</div>
+
+<div class="row mt-2" hidden="@string.IsNullOrWhiteSpace(NewGuid)">
+    <div class="col-9">
+        <button @onclick="StartTimer">Get Status</button>
+    </div>
+</div>
+<div class="progress mt-2" hidden="@string.IsNullOrWhiteSpace(NewGuid)">
+    <div class="progress-bar bg-success"
+         role="progressbar" style="width: @(progressValue)%" aria-valuenow="@progressValue" aria-valuemin="0" aria-valuemax="100"></div>
+</div>
+<div class="row mt-2" hidden="@string.IsNullOrWhiteSpace(NewGuid)">
+    <div class="col-12">
+        @Result
+    </div>
+</div>
+<hr hidden="@string.IsNullOrWhiteSpace(NewGuid)">
+<div class="row mt-2" hidden="@string.IsNullOrWhiteSpace(NewGuid)">
+    <div class="col-9">
+        <button @onclick="GetAll"> Get All </button>
+    </div>
+</div>
+<br />
+<div class="row mt-2" hidden="@string.IsNullOrWhiteSpace(NewGuid)">
+    <div class="col-12">
+        @if (allProcs == null)
+        {
+            <p><em>No processes loaded.</em></p>
+        }
+        else
+        {
+            <table class='table'>
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Status</th>
+                        <th>Result</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var emp in allProcs)
+                    {
+                        <tr>
+                            <td>@emp.Id</td>
+                            <td>@emp.Status</td>
+                            <td>@emp.Result</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+</div>
+
+
+@code {
+    private string NewGuid { get; set; }
+    private Data.StatusObject statusObj;
+    private int progressValue = 0;
+    private string Result { get; set; }
+    private Data.DataModel model = new Data.DataModel();
+    private List<Data.ExtendedStatusObject> allProcs = new List<ExtendedStatusObject>();
+
+
+    private async Task StartCalculation()
+    {
+        if (aTimer != null)
+        {
+            aTimer.Enabled = false;
+            progressValue = 0;
+            Result = "";
+        }
+
+        var request = new HttpRequestMessage(HttpMethod.Get, "https://localhost:44364/Process/StartCalculation/" + model.FirstName + "/" + model.LastName);
+        var client = ClientFactory.CreateClient();
+        var response = await client.SendAsync(request);
+        if (response.IsSuccessStatusCode)
+        {
+            using var responseStream = await response.Content.ReadAsStreamAsync();
+            NewGuid = await JsonSerializer.DeserializeAsync
+                <string>(responseStream);
+        }
+        else
+        {
+            NewGuid = "An error occured trying to reach the server.";
+        }
+
+    }
+
+    private async Task GetStatus()
+    {
+        var request = new HttpRequestMessage(HttpMethod.Get, "https://localhost:44364/Process/GetStatus/" + NewGuid);
+        var client = ClientFactory.CreateClient();
+        var response = await client.SendAsync(request);
+        if (response.IsSuccessStatusCode)
+        {
+            using var responseStream = await response.Content.ReadAsStreamAsync();
+            statusObj = await JsonSerializer.DeserializeAsync<Data.StatusObject>(responseStream);
+            progressValue = statusObj.Progress;
+            Result = "Task running. Please wait... " + progressValue + "%";
+        }
+        else
+        {
+            Result = "An error occured trying to reach the server.";
+        }
+    }
+
+    private async Task GetAll()
+    {
+        var request = new HttpRequestMessage(HttpMethod.Get, "https://localhost:44364/Process/GetAll");
+        var client = ClientFactory.CreateClient();
+        var response = await client.SendAsync(request);
+        if (response.IsSuccessStatusCode)
+        {
+            using var responseStream = await response.Content.ReadAsStreamAsync();
+            allProcs = await JsonSerializer.DeserializeAsync<List<Data.ExtendedStatusObject>>(responseStream);
+        }
+        else
+        {
+            Result = "An error occured trying to reach the server.";
+        }
+    }
+
+    #region Timer
+    //timer
+    private static System.Timers.Timer aTimer;
+    public void StartTimer()
+    {
+        progressValue = 1;
+        Result = "Task running. Please wait... 1%";
+        aTimer = new System.Timers.Timer(500); // refresh progress bar at 0.5 sec
+        aTimer.Elapsed += CountDownTimer;
+        aTimer.Enabled = true;
+    }
+
+    public void CountDownTimer(Object source, System.Timers.ElapsedEventArgs e)
+    {
+        if (progressValue < 100)
+        {
+            GetStatus();
+        }
+        else
+        {
+            aTimer.Enabled = false;
+            if (statusObj.Status == "failed")
+                Result = "The task failed to finish the execution.";
+            else
+                Result = "The task finished succesfully. This is the result: " + statusObj.Result;
+
+        }
+        InvokeAsync(StateHasChanged);
+    }
+    #endregion
+}

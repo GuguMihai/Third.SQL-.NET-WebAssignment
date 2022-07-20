@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30114.105
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ThirdRequirementBlazor", "ThirdRequirementBlazor\ThirdRequirementBlazor.csproj", "{0DD052C5-F623-4AE7-A72F-6848F5CE20ED}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ThirdRequirement", "Blazor\ThirdRequirement\ThirdRequirement.csproj", "{D1BC1EFF-61EF-4612-8502-450B564F3C65}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0DD052C5-F623-4AE7-A72F-6848F5CE20ED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0DD052C5-F623-4AE7-A72F-6848F5CE20ED}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0DD052C5-F623-4AE7-A72F-6848F5CE20ED}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0DD052C5-F623-4AE7-A72F-6848F5CE20ED}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D1BC1EFF-61EF-4612-8502-450B564F3C65}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D1BC1EFF-61EF-4612-8502-450B564F3C65}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D1BC1EFF-61EF-4612-8502-450B564F3C65}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D1BC1EFF-61EF-4612-8502-450B564F3C65}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {30CABEEF-2DDF-48F2-BA86-B15889EE6529}
+	EndGlobalSection
+EndGlobal

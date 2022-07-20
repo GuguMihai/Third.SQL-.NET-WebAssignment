@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "q3r9bGsOmZjTUxCNIiN3p46NLSseNA+vgDhFqxnDj1LbR2PidcQSO+/q565OLfxAXNfuHKpHylRnBPzfc/7Hhg==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\Mihai\\source\\repos\\ThirdRequirementBlazor\\ThirdRequirementBlazor\\ThirdRequirementBlazor.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\Mihai\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\3.1.2\\microsoft.aspnetcore.app.ref.3.1.2.nupkg.sha512"
+  ],
+  "logs": []
+}
