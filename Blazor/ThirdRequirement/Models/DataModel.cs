@@ -12,5 +12,7 @@ namespace ThirdRequirement.Models
         public DateTime ComputationStartDatetime { get; set; }
         public int ComputationRequiredTime { get; set; }
         public string Result { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
     }
 }

@@ -36,7 +36,9 @@ namespace ThirdRequirement.Controllers
                 Id = newGuid,
                 ComputationStartDatetime = DateTime.UtcNow,
                 ComputationRequiredTime = calcTime,
-                Status = "running"
+                Status = "running",
+                FirstName = fn,
+                LastName = ln
             };
 
             var cacheEntryOptions = new MemoryCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromHours(1));
@@ -84,6 +86,11 @@ namespace ThirdRequirement.Controllers
                     res.Progress = 100;
                     res.Result = model.Result;
                     res.Status = model.Status;
+
+                    if(res.Result == null)
+                    {
+                        res.Result = ProcessingService.GetDbData(model.FirstName, model.LastName);
+                    }
                 }
             }
             else

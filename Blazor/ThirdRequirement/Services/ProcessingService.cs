@@ -30,7 +30,7 @@ namespace ThirdRequirement.Services
             }
         }
 
-        private static string GetDbData(string fn, string ln)
+        public static string GetDbData(string fn, string ln)
         {
             var tempRes = "";
             using (var connection = new SqlConnection(@"Data Source=localhost;Initial Catalog=Database;Integrated Security=True;Persist Security Info=False;Pooling=False;MultipleActiveResultSets=False;Connect Timeout=600;Encrypt=False;TrustServerCertificate=False"))
